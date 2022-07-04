@@ -12,6 +12,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from os.path import exists
+import json
 
 class Thread(QThread):
     _signal = pyqtSignal(int)
@@ -31,6 +33,14 @@ class Window(QWidget):
         
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
+
+
+        # user
+        self.button_cred = QPushButton("Set")
+        self.button_cred.clicked.connect(self.onCredClicked)
+        self.button_cred.setFixedWidth(30)
+        self.layout.addWidget(self.button_cred)
+
 
         # Job Number
         self.job_layout = QVBoxLayout()
@@ -141,7 +151,7 @@ class Window(QWidget):
         else:
             
             jobNum = self.input1.text()
-            driver = webdriver.Chrome(executable_path="C:/Users/roshan.liu/Documents/OneDrive - Gorenje d.o.o/Script/chromedriver.exe")
+            driver = webdriver.Chrome(executable_path="C:/Users/roshan.liu/Scripts/SAG_PreEmpt/chromedriver.exe")
             driver.get("https://partners.gorenje.com/sagcc/Sredina.aspx")
             wait = WebDriverWait(driver, 10)
             driver.find_element(By.ID, "usr").send_keys("liuro_sh")
@@ -191,13 +201,76 @@ class Window(QWidget):
             self.result.selectAll()
             self.part_list.clear()
             self.input1.clear()
-            os.system("VBScripts\\ReleaseOneTransfer.vbs {}".format(SAP))
 
     def signal_accept(self, msg):
         self.PgBar.setValue(int(msg))
         if self.PgBar.value() == 99:
             self.PgBar.setValue(0)
 
+
+    def onCredClicked(self):
+        cred_window = credWindow()
+        cred_window.show()
+
+
+class credWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Pre-empt")
+        
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+
+        with open('config.json','r') as j:
+            config = json.load(j)
+            usr = config['usr']
+            pwd = config['pwd']
+        self.labelUsr = QLabel('User Name:')
+        self.inputUsr = QLineEdit(usr)
+        self.labelPwd = QLabel('Password')
+        self.inputPwd = QLineEdit(pwd)
+        self.button_sav = QPushButton
+        self.button_sav.clicked.connect(self.onSavClicked)
+
+
+        self.layout.addWidget(self.labelUsr)
+        self.layout.addWidget(self.inputUsr)
+        self.layout.addWidget(self.labelPwd)
+        self.layout.addWidget(self.inputPwd)
+        self.layout.addWidget(self.button_sav)
+
+    def onSavClicked(self):
+        usr = self.inputUsr.text()
+        pwd = self.inputPwd.text()
+        json_obj={
+            'usr':usr,
+            'pwd':pwd
+        }
+        with open('config.json','w') as j:
+            json.dump(json_obj,j)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exist=exists('config.json')
+if not exist:
+    json_obj={
+            'usr':'',
+            'pwd':''
+        }
+    with open('config.json','w') as j:
+        json.dump(json_obj,j)
 
 app=QApplication([])
 window=Window()
