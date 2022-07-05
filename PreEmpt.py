@@ -199,7 +199,7 @@ class Window(QWidget):
             self.part_list.clear()
             self.input1.clear()
 
-            os.system("Scripts\\SAP_DailyRelease\\SAP_Scripts\\ReleaseOneTransfer.vbs {}".format(SAP))
+            os.system("Scripts\\SAP_PreEmpt\\ReleaseOneTransfer.vbs {}".format(SAP))
 
 
 
