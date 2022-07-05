@@ -14,6 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from os.path import exists
 import json
+import chrome_version 
 
 class Thread(QThread):
     _signal = pyqtSignal(int)
@@ -33,13 +34,6 @@ class Window(QWidget):
         
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
-
-
-        # user
-        self.button_cred = QPushButton("Set")
-        self.button_cred.clicked.connect(self.onCredClicked)
-        self.button_cred.setFixedWidth(30)
-        self.layout.addWidget(self.button_cred)
 
 
         # Job Number
@@ -149,13 +143,16 @@ class Window(QWidget):
             dlg.setIcon(QMessageBox.Icon.Warning)
             dlg.exec()
         else:
-            
+            with open('config.json','r') as j:
+                config= json.load(j)
+                usr= config['usr']
+                pwd = config['pwd']
             jobNum = self.input1.text()
             driver = webdriver.Chrome(executable_path="C:/Users/roshan.liu/Scripts/SAG_PreEmpt/chromedriver.exe")
             driver.get("https://partners.gorenje.com/sagcc/Sredina.aspx")
             wait = WebDriverWait(driver, 10)
-            driver.find_element(By.ID, "usr").send_keys("liuro_sh")
-            driver.find_element(By.ID, "pwd").send_keys("gorenje1")
+            driver.find_element(By.ID, "usr").send_keys(usr)
+            driver.find_element(By.ID, "pwd").send_keys(pwd)
             driver.find_element(By.ID, "btnPrijava").click()
             original_window = driver.current_window_handle
             assert len(driver.window_handles) == 1
@@ -208,11 +205,11 @@ class Window(QWidget):
             self.PgBar.setValue(0)
 
 
-    def onCredClicked(self):
-        cred_window = credWindow()
-        cred_window.show()
+    #def onCredClicked(self):
+        #cred_window = credWindow()
+        #cred_window.show()
 
-
+"""
 class credWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -249,6 +246,7 @@ class credWindow(QWidget):
         with open('config.json','w') as j:
             json.dump(json_obj,j)
 
+"""
 
 
 
@@ -260,8 +258,7 @@ class credWindow(QWidget):
 
 
 
-
-
+print(chrome_version.get_chrome_version())
 
 exist=exists('config.json')
 if not exist:
