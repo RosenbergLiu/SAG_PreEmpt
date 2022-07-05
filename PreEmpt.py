@@ -199,6 +199,12 @@ class Window(QWidget):
             self.part_list.clear()
             self.input1.clear()
 
+            os.system("Scripts\\SAP_DailyRelease\\SAP_Scripts\\ReleaseOneTransfer.vbs {}".format(SAP))
+
+
+
+
+
     def signal_accept(self, msg):
         self.PgBar.setValue(int(msg))
         if self.PgBar.value() == 99:
