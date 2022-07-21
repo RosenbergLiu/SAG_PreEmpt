@@ -1,5 +1,6 @@
 from cProfile import label
 from lib2to3.pgen2 import driver
+from typing import OrderedDict
 from unittest import result
 from PyQt6.QtWidgets import QApplication, QHBoxLayout, QProgressBar, QVBoxLayout, QWidget,QLabel, QLineEdit, QPushButton,QListWidget, QMessageBox
 from PyQt6.QtGui import QIcon
@@ -15,6 +16,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from os.path import exists
 import json
 import chrome_version 
+import psycopg2 as db_connect
 
 class Thread(QThread):
     _signal = pyqtSignal(int)
@@ -166,6 +168,7 @@ class Window(QWidget):
             wait.until(EC.presence_of_element_located((By.ID,"ctl00_ContentPlaceHolder1_btnAUNarocilo")))
             driver.find_element(By.ID, "ctl00_ContentPlaceHolder1_btnAUNarocilo").click()
             driver.switch_to.frame('ctl00_ContentPlaceHolder1_ASPxPopupControl1_CIF-1') 
+            preemptParts = {}
             for row in range(self.part_list.count()):
 
                 rowitem=self.part_list.item(row).text().split("   X   ")
@@ -198,6 +201,8 @@ class Window(QWidget):
             self.result.selectAll()
             self.part_list.clear()
             self.input1.clear()
+
+
 
             os.system("Scripts\\SAP_PreEmpt\\ReleaseOneTransfer.vbs {}".format(SAP))
 
