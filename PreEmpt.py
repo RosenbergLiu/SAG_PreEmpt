@@ -168,7 +168,8 @@ class Window(QWidget):
             wait.until(EC.presence_of_element_located((By.ID,"ctl00_ContentPlaceHolder1_btnAUNarocilo")))
             driver.find_element(By.ID, "ctl00_ContentPlaceHolder1_btnAUNarocilo").click()
             driver.switch_to.frame('ctl00_ContentPlaceHolder1_ASPxPopupControl1_CIF-1') 
-            preemptParts = {}
+            preemptParts = []
+            preemptQty=[]
             for row in range(self.part_list.count()):
 
                 rowitem=self.part_list.item(row).text().split("   X   ")
@@ -191,6 +192,11 @@ class Window(QWidget):
                 driver.find_element(By.ID, "spKolicinaMatNarocilo_I").clear()
                 driver.find_element(By.ID, "spKolicinaMatNarocilo_I").send_keys(qty)
                 driver.find_element(By.ID, "btnDodajNaNarocilo").click()
+
+
+                preemptParts.append(part)
+                preemptQty.append(qty)
+
             driver.find_element(By.ID, "btnNarociloZapriInZakljuci_CD").click()
             alert = wait.until(EC.alert_is_present())
             ALE=alert.text
