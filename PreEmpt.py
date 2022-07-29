@@ -17,6 +17,8 @@ from os.path import exists
 import json
 import chrome_version 
 import psycopg2 as db_connect
+import Database
+import datetime
 
 class Thread(QThread):
     _signal = pyqtSignal(int)
@@ -97,6 +99,7 @@ class Window(QWidget):
         #Progress Bar
         self.PgBar = QProgressBar(self)
         self.layout.addWidget(self.PgBar)
+        self.PgBar.setValue(100)
 
 
     def onAddClicked(self):
@@ -129,6 +132,7 @@ class Window(QWidget):
 
 
     def onRunClicked(self):
+        self.PgBar.setValue(0)
         self.thread = Thread()
         self.thread._signal.connect(self.signal_accept)
         self.thread.start()
@@ -152,14 +156,17 @@ class Window(QWidget):
             jobNum = self.input1.text()
             driver = webdriver.Chrome(executable_path="C:/Users/roshan.liu/Scripts/SAG_PreEmpt/chromedriver.exe")
             driver.get("https://partners.gorenje.com/sagcc/Sredina.aspx")
+            self.PgBar.setValue(10)
             wait = WebDriverWait(driver, 10)
             driver.find_element(By.ID, "usr").send_keys(usr)
             driver.find_element(By.ID, "pwd").send_keys(pwd)
             driver.find_element(By.ID, "btnPrijava").click()
+            self.PgBar.setValue(30)
             original_window = driver.current_window_handle
             assert len(driver.window_handles) == 1
             driver.find_element(By.ID, "ctl00_tbOss").send_keys(jobNum)
             driver.find_element(By.ID, "ctl00_btnOss").click()
+            self.PgBar.setValue(40)
             wait.until(EC.number_of_windows_to_be(2))
             for window_handle in driver.window_handles:
                 if window_handle != original_window:
@@ -168,6 +175,7 @@ class Window(QWidget):
             wait.until(EC.presence_of_element_located((By.ID,"ctl00_ContentPlaceHolder1_btnAUNarocilo")))
             driver.find_element(By.ID, "ctl00_ContentPlaceHolder1_btnAUNarocilo").click()
             driver.switch_to.frame('ctl00_ContentPlaceHolder1_ASPxPopupControl1_CIF-1') 
+            self.PgBar.setValue(50)
             preemptParts = []
             preemptQty=[]
             for row in range(self.part_list.count()):
@@ -196,10 +204,12 @@ class Window(QWidget):
 
                 preemptParts.append(part)
                 preemptQty.append(qty)
-
+            self.PgBar.setValue(80)
             driver.find_element(By.ID, "btnNarociloZapriInZakljuci_CD").click()
+            self.PgBar.setValue(90)
             alert = wait.until(EC.alert_is_present())
             ALE=alert.text
+            self.PgBar.setValue(100)
             alert.accept()
             
             SAP = ALE.split(": ")[1]
@@ -207,6 +217,7 @@ class Window(QWidget):
             self.result.selectAll()
             self.part_list.clear()
             self.input1.clear()
+           
 
 
 
