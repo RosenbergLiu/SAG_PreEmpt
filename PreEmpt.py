@@ -39,7 +39,6 @@ class Window(QWidget):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
-
         # Job Number
         self.job_layout = QVBoxLayout()
         self.label1 = QLabel("Job Numer")
@@ -47,7 +46,6 @@ class Window(QWidget):
         self.input1 = QLineEdit()
         self.job_layout.addWidget(self.input1)
         self.layout.addLayout(self.job_layout)
-
 
         # Part Number
         label2 = QLabel("Part Numer & Quantity")
@@ -64,11 +62,11 @@ class Window(QWidget):
 
         self.layout.addLayout(self.part_layout)
 
-
         button_add = QPushButton("Add")
         button_add.setFixedWidth(40)
         button_del = QPushButton("Delete")
         button_del.setFixedWidth(50)
+
         self.layout_button = QHBoxLayout()
         self.layout_button.addWidget(button_add)
         self.layout_button.addWidget(button_del)
@@ -80,27 +78,22 @@ class Window(QWidget):
 
         self.layout.addWidget(self.part_list)
 
-
         button_add.clicked.connect(self.onAddClicked)
         button_del.clicked.connect(self.onDelClicked)
-
 
         self.button_run = QPushButton("Run")
         self.layout.addWidget(self.button_run)
 
         self.button_run.clicked.connect(self.onRunClicked)
 
-
         #Result
         self.result = QLineEdit()
         self.layout.addWidget(self.result)
-
 
         #Progress Bar
         self.PgBar = QProgressBar(self)
         self.layout.addWidget(self.PgBar)
         self.PgBar.setValue(100)
-
 
     def onAddClicked(self):
         part_number = self.input3.text().replace(" ","")
@@ -125,12 +118,9 @@ class Window(QWidget):
             self.input3.clear()
             self.input2.setText("1")
             self.input3.setFocus()
-
     def onDelClicked(self):
         selected = self.part_list.currentRow()
         self.part_list.takeItem(selected)
-
-
     def onRunClicked(self):
         self.PgBar.setValue(0)
         self.thread = Thread()
@@ -178,8 +168,8 @@ class Window(QWidget):
             self.PgBar.setValue(50)
             preemptParts = []
             preemptQty=[]
-            for row in range(self.part_list.count()):
 
+            for row in range(self.part_list.count()):
                 rowitem=self.part_list.item(row).text().split("   X   ")
                 part=rowitem[0]
                 qty=rowitem[1]
@@ -188,22 +178,16 @@ class Window(QWidget):
                 driver.find_element(By.ID, "dd_izd_sifra_I").send_keys(Keys.ENTER)
                 wait.until(EC.presence_of_element_located((By.ID,"dd_izd_sifra_DDD_L_LBI0T0")))
                 driver.find_element(By.ID, "dd_izd_sifra_I").send_keys(Keys.DOWN)
-
                 driver.find_element(By.ID, "dd_izd_sifra_I").send_keys(Keys.ENTER)
-
                 #driver.find_element(By.CSS_SELECTOR, '#dd_izd_sifra_DDD_L_LBI0T0 > em').click()
                 #driver.find_element(By.ID, "dd_izd_sifra_DDD_PWC-1").send_keys(Keys.ENTER)
-
-
-
                 wait.until(EC.presence_of_element_located((By.ID,"spKolicinaMatNarocilo_I")))
                 driver.find_element(By.ID, "spKolicinaMatNarocilo_I").clear()
                 driver.find_element(By.ID, "spKolicinaMatNarocilo_I").send_keys(qty)
                 driver.find_element(By.ID, "btnDodajNaNarocilo").click()
-
-
                 preemptParts.append(part)
                 preemptQty.append(qty)
+
             self.PgBar.setValue(80)
             driver.find_element(By.ID, "btnNarociloZapriInZakljuci_CD").click()
             self.PgBar.setValue(90)
@@ -218,20 +202,12 @@ class Window(QWidget):
             self.part_list.clear()
             self.input1.clear()
            
-
-
-
             os.system("Scripts\\SAP_PreEmpt\\ReleaseOneTransfer.vbs {}".format(SAP))
-
-
-
-
 
     def signal_accept(self, msg):
         self.PgBar.setValue(int(msg))
         if self.PgBar.value() == 99:
             self.PgBar.setValue(0)
-
 
     #def onCredClicked(self):
         #cred_window = credWindow()
@@ -256,8 +232,6 @@ class credWindow(QWidget):
         self.inputPwd = QLineEdit(pwd)
         self.button_sav = QPushButton
         self.button_sav.clicked.connect(self.onSavClicked)
-
-
         self.layout.addWidget(self.labelUsr)
         self.layout.addWidget(self.inputUsr)
         self.layout.addWidget(self.labelPwd)
@@ -275,16 +249,6 @@ class credWindow(QWidget):
             json.dump(json_obj,j)
 
 """
-
-
-
-
-
-
-
-
-
-
 
 print(chrome_version.get_chrome_version())
 
