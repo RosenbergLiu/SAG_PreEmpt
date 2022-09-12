@@ -8,7 +8,7 @@ import openpyxl
 
 
 connection = db_connect.connect(
-    host="172.20.190.105",
+    host="172.20.190.100",
     user="postgres",
     password="731797",
     database="asko",
